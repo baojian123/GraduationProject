@@ -26,6 +26,28 @@ var query = function(string,params,res){
   })
 }
 
+//插入数据
+var insert = function(table,params){
+  var cnt = 0;
+  var string = "insert into "+table+" values(";
+  for (i in params){
+    if(cnt!=0){
+      string+=","
+      console.log(i);
+    }
+    if(typeof(params[i])=="string"){
+        string+="'";
+        string+=params[i];
+        string+="'";
+    }else{
+      string+=params[i]
+    }
+    cnt++;
+  }
+  string+=");";
+  console.log(string);
+  connection.query(string,params);
+}
 //获取所链接数据库的所有表名
 var getTableNames = function(res){
   var string ="select distinct TABLE_NAME from information_schema.columns where table_schema='"+DB+"';";
@@ -62,6 +84,7 @@ var searchData = function(table,res){
 
 exports.connect = connect;
 exports.query = query;
+exports.insert = insert;
 exports.getTableNames = getTableNames;
 exports.getColumnNames = getColumnNames;
 exports.searchData = searchData;

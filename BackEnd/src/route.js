@@ -8,18 +8,31 @@ var constant=require('./constant');
 console.log(typeof(constant.day))
 var cookieConfigure={maxAge:30*constant.day,path:'/',httpOnly:true};
 
-
-
+var DB = 'DigDugDog';
+// var DB = 'Graduation_Project';
 app.use(bodyParser.json());
 
-// mysql.connect('DigDugDog');
-mysql.connect('Graduation_Project');
+mysql.connect(DB);
 
-mysql.getTableNames(function(results){
+
+//测试块
+{	mysql.getTableNames(function(results){
 	for (i in results){
 	console.log(results[i].TABLE_NAME);
 }
-});
+	});
+	var database = require('./database');
+	database.setDB(DB);
+	database.dropTable();
+	database.initTable();
+	database.setData();
+
+	// mysql.insert("user",{
+	// 	user_id : 10005,
+	// 	user_name : "rongcheng",
+	// 	user_pwd : "laogewen"
+	// });
+}
 
 //获取数据
 app.use('/data',function(req,res){
@@ -61,6 +74,7 @@ app.use('/data',function(req,res){
 							// console.log(table_name+":aaa:"+index);
 							// console.log(data.lenth);
 							var j;
+							json.data[index]=[];
 							for(j in data){
 								console.log(data[j]);
 								console.log(j);
