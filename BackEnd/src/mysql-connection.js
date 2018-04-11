@@ -26,6 +26,14 @@ var query = function(string,params,res){
   })
 }
 
+//查找数据条数
+var findCount = function (table) {
+  var string = "select count(*) from "+table;
+  query(string,[],function(){
+
+  });
+}
+
 //插入数据
 var insert = function(table,params){
   var cnt = 0;

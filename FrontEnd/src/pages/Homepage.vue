@@ -1,107 +1,103 @@
 <template>
-  <div class="Homepage">
-    <Navigation :color="colorMsg"></Navigation>
-    <h1>{{ msg }}</h1>
-    <h2>Essential Links</h2>
-    <ul>
-      <li>
-        <a
-          href="https://vuejs.org"
-          target="_blank"
-        >
-          Core Docsssss
-        </a>
-      </li>
-      <li>
-        <a
-          href="https://forum.vuejs.org"
-          target="_blank"
-        >
-          Forum
-        </a>
-      </li>
-      <li>
-        <a
-          href="https://chat.vuejs.org"
-          target="_blank"
-        >
-          Community Chat
-        </a>
-      </li>
-      <li>
-        <a
-          href="https://twitter.com/vuejs"
-          target="_blank"
-        >
-          Twitter
-        </a>
-      </li>
-      <br>
-      <li>
-        <a
-          href="http://vuejs-templates.github.io/webpack/"
-          target="_blank"
-        >
-          Docs for This Template
-        </a>
-      </li>
-    </ul>
-    <h2>Ecosystem</h2>
-    <ul>
-      <li>
-        <a
-          href="http://router.vuejs.org/"
-          target="_blank"
-        >
-          vue-router
-        </a>
-      </li>
-      <li>
-        <a
-          href="http://vuex.vuejs.org/"
-          target="_blank"
-        >
-          vuex
-        </a>
-      </li>
-      <li>
-        <a
-          href="http://vue-loader.vuejs.org/"
-          target="_blank"
-        >
-          vue-loader
-        </a>
-      </li>
-      <li>
-        <a
-          href="https://github.com/vuejs/awesome-vue"
-          target="_blank"
-        >
-          awesome-vue
-        </a>
-      </li>
-    </ul>
+  <div  class = "Homepage">
+    <Navigation :color = "colorMsg"></Navigation>
+    <div class="left-nav">
+      {{type}}
+      <!-- <Dialog :type = "type"></Dialog> -->
+    </div>
+    <div class="main">
+      <button @click="flag=!flag" type="button" name="button">{{flag}}</button>
+      <!-- <div class="header"></div> -->
+      <div class="content">
+        <div class="passage-list">{{passage}}</div>
+      </div>
+        <PassageEditor @submitContent="submitContent"></PassageEditor>
+    </div>
   </div>
 </template>
 
 <script>
+import axios from 'axios'
 import Navigation from '@/components/Navigation'
+import PassageEditor from '@/components/PassageEditor'
+// import Dialog from '@/components/Dialog'
 export default {
   name: 'Homepage',
   data () {
     return {
       colorMsg: '#555555',
-      msg: 'hello'
+      msg: 'hello',
+      type: 'login',
+      flag: false,
+      passage: {},
+      user: {}
     }
   },
+  methods: {
+    getMyinfo: function () {
+      const self = this
+      var id = this.getCookie('user_id')
+      axios.post('http://localhost:3000/userInfo', {user_id: id})
+        .then(function (response) {
+          self.user = response.data
+        })
+    },
+    getCookie: function (column) {
+      var str = document.cookie.split(';')
+      var arr
+      for (var i in str) {
+        arr = unescape(str[i])
+        arr = arr.split('=')
+        for (var j in arr) {
+          if (column === arr[j]) {
+            console.log(arr[Number(j) + 1])
+            return arr[Number(j) + 1]
+          }
+        }
+      }
+    },
+    submitContent: function (content) {
+      var time = new Date().toLocaleDateString()
+      // alert(time);
+      var json = {
+        user_id: this.user.user_info.user_id,
+        submit_date: time,
+        passage_content: content
+      }
+      axios.post('http://localhost:3000/passage', json)
+        .then(function (response) {
+        })
+    },
+    getPassage: function () {
+      const self = this
+      var json = {
+        user_id: ''
+      }
+      axios.post('http://localhost:3000/getallpassage', json)
+        .then(function (response) {
+          self.passage = response.data
+        })
+    }
+  },
+  mounted () {
+    this.getMyinfo()
+    this.getPassage()
+  },
   components: {
-    Navigation
+    Navigation, PassageEditor
   }
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.main{
+  position:relative;
+  top:200px;
+  left:200px;
+  width:800px;
+  height:300px;
+}
 h1, h2 {
   font-weight: normal;
 }

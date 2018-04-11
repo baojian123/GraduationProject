@@ -12,16 +12,30 @@
       </div>
       <div class="title">
         <h3>后台管理系统</h3>
+
+      </div>
+    </div>
+    <div class="main" :style="{marginLeft : !isRotate *(200) + 'px' }">
+      <div class="train-list">
+        <div class="train-form">
+          <input type="text" value="2018-04-01" v-model="train_form.train_date">
+          <input type="text" value="北京" v-model="train_form.from_station">
+          <input type="text" value="上海" v-model="train_form.to_station">
+          <input name="purpose_codes" type="radio" id="STUDENT" value="STUDENT" v-model="train_form.purpose_codes">
+          <label for="STUDENT">学生票</label>
+          <input name="purpose_codes" type="radio" checked id="ADULT" value="ADULT" v-model="train_form.purpose_codes">
+          <label for="ADULT">成人票</label>
+          <button type="button" name="button" @click="getAPI">查询</button>
+          {{train_form}}
+          {{train_data}}
+        </div>
       </div>
       <div class="table-list">
-
         <select class="" name="" v-model="table_selected">
           <option value="-1" @click="selected(-1)">请选择</option>
           <option v-for="(table, i) in database.table_name" :key="table" :value="i">{{table}}</option>
         </select>
       </div>
-    </div>
-    <div class="main">
       {{database.column_name[table_selected]}}
       {{database.data[table_selected]}}
       <table style="border:1px soild;">
@@ -38,16 +52,41 @@
 
 <script>
 import axios from 'axios'
+import split from '@/split.js'
 export default {
   data () {
     return {
       database: [],
+      train_form: {
+        train_date: '',
+        from_station: '',
+        to_station: '',
+        purpose_codes: ''
+      },
+      train_data: [{
+        'train_status': '',
+        'train_code': '',
+        'from_station': '',
+        'to_station': '',
+        'start_time': '',
+        'end_time': '',
+        'cost_time': '',
+        'order_status': '',
+        'train_date': '',
+        'hard_berth': '',
+        'soft_berth': '',
+        'second_class': '',
+        'first_class': '',
+        'special_class': '',
+        'motor_berth': ''
+      }],
       table_selected: -1,
       isRotate: 0
     }
   },
   mounted () {
     this.getData()
+    // this.getAPI()
   },
   methods: {
     getData: function () {
@@ -55,8 +94,20 @@ export default {
       const self = this
       axios.get('http://localhost:3000/data')
         .then(function (response) {
-          console.log(response.data)
+          console.log('tableData:' + response.data)
           self.database = response.data
+        })
+    },
+    getAPI: function () {
+      const self = this
+      axios.post('http://localhost:3000/query', this.train_form)
+        .then(function (response) {
+          var results = split.getTrain(response.data)
+          self.train_data = results
+          console.log('train_Data:' + results)
+        })
+        .catch(function (err) {
+          console.log(err.message)
         })
     },
     selected: function (i) {
@@ -113,7 +164,7 @@ export default {
 
 }
 .main{
-  margin-left: 200px;
+  padding:10px;
 }
 th, td{
   border:1px solid;
