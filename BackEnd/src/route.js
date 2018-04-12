@@ -284,7 +284,7 @@ app.use('/getcomment', function (req,res) {
 	var sqlString = 'select * from comment where passage_id = ?;'
 	mysql.query(sqlString, [passage_id], function (results) {
 		for (var i in results) {
-			json.data[i] = resutls[i]
+			json.data[i] = results[i]
 		}
 		res.write(JSON.stringify(json))
 		res.send();

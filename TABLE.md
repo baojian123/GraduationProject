@@ -44,6 +44,7 @@ CREATE TABLE manager(
 passage_id|int|not null|文章ID|主键
 user_id|varchar(32)|not null|作者ID|外键(user)
 submit_date|date|not null|发表日期|
+passage_title|varchar(80)|not null|文章题目|
 passage_content|text|null|文章内容|
 passage_status|varchar(32)|('已审核','未审核','撤除')|文章状态|
 comment_count|int|not null|评论数|
@@ -55,6 +56,7 @@ CREATE TABLE passage(
   user_id varchar(32) not null ,
   passage_id int not null ,
   submit_date date not null ,
+  passage_title varchar(80) not null,
   passage_content text null ,
   passage_status varchar(32) not null default '未审核',
   comment_count int not null default 0,

@@ -4,12 +4,14 @@
       <img :src="item.user_icon" alt="">
     </div>
     {{item.user_id}}
-    <button type="button" v-if="item.is_followed != undefined" @click="follow(item.user_id,flag)">{{flag? '取消关注':'关注'}}</button>
+    <!-- <button type="button" v-if="item.is_followed != undefined" @click="follow(item.user_id,flag)">{{flag? '取消关注':'关注'}}</button> -->
+    <FollowButton :follower_id="cookie" :item="item"></FollowButton>
   </div>
 </template>
 
 <script>
 import axios from 'axios'
+import FollowButton from './FollowButton'
 export default {
   name: 'PeopleListItem',
   props: ['item', 'cookie'],
@@ -41,6 +43,9 @@ export default {
   mounted () {
     console.log(this.item.is_followed)
     this.flag = this.item.is_followed
+  },
+  components: {
+    FollowButton
   }
 }
 </script>

@@ -5,3 +5,8 @@
   padding:5px;
   color: #ffffff;
 }
+.small-icon>img {
+  width:40px;
+  height:40px;
+  border-radius:50%;
+}

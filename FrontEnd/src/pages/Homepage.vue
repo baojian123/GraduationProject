@@ -9,9 +9,9 @@
       <button @click="flag=!flag" type="button" name="button">{{flag}}</button>
       <!-- <div class="header"></div> -->
       <div class="content">
-        <div class="passage-list">{{passage}}</div>
+        <div class="passage-list"></div>
         <div class="" v-for="(passageItem,index) in passage.data" :key="index">
-          <PassageListItem :passage="passageItem"></PassageListItem>
+          <PassageListItem :passage="passageItem" :user="user"></PassageListItem>
         </div>
       </div>
         <PassageEditor @submitContent="submitContent"></PassageEditor>

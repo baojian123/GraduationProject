@@ -1,16 +1,24 @@
 <template lang="html">
-  <div class="">
-    {{user_icon}}
+  <div class="passage-item">
     <div class="passage-content" v-html="passage.passage_content">
     </div>
     <div class="passage-footer">
       <div class="author">
         <div class="small-icon">
-          <img :src="user_icon" alt="">
+          <img :src="author.user_icon" alt="">
         </div>
-        {{passage.user_id}}</div>
+        <div class="author-id">
+          <router-link :to="{ path: '/userinfo/' + passage.user_id }">{{passage.user_id}}</router-link>
+        </div>
+        <div class="follow-button">
+          <!-- <button @click="follow">
+            关注
+          </button> -->
+          <FollowButton :follower_id="user.user_info.user_id" :item="author"></FollowButton>
+        </div>
+      </div>
       <div class="comment">
-        评论数:{{passage.comment_count}}
+        评论数: {{passage.comment_count}}
         点赞数:{{passage.collect_count}}
       </div>
     </div>
@@ -21,36 +29,76 @@
 <script>
 import axios from 'axios'
 import CommentBoard from './CommentBoard'
+import FollowButton from './FollowButton'
+
+import '@/css/base.css'
 export default {
   name: 'PassageListItem',
-  props: ['passage'],
+  props: ['passage', 'user'],
   data () {
     return {
-      user_icon: ''
+      author: {
+        user_id: '',
+        user_icon: '',
+        is_followed: false
+      }
     }
   },
   methods: {
-    getUser: function (id) {
+    isFollowed: function (id) {
+      var list = this.user.following_list
+      // var list = []
+
+      var flag = 0
+      for (var i in list) {
+        if (list[i].user_id === id) {
+          flag = 1
+        }
+      }
+      if (this.user.user_info.user_id === id) {
+        flag = -1
+      }
+      if (flag === 1) {
+        return true
+      }
+      if (flag === 0) {
+        return false
+      }
+      return undefined
+    },
+    getUserIcon: function (id) {
       const self = this
       axios.post('http://localhost:3000/getusericon', {user_id: id})
         .then(function (response) {
-          self.user_icon = require('../assets/icon/' + response.data.user_icon)
+          self.author.user_icon = require('../assets/icon/' + response.data.user_icon)
+          self.author.user_id = self.passage.user_id
+          self.author.is_followed = self.isFollowed(self.passage.user_id)
         })
     }
   },
   mounted () {
-    this.getUser(this.passage.user_id)
+    this.getUserIcon(this.passage.user_id)
   },
   components: {
-    CommentBoard
+    CommentBoard,
+    FollowButton
   }
 }
 </script>
 
 <style lang="css">
-.small-icon>img{
-  width:40px;
-  height:40px;
-  border-radius:50%;
+.author {
+  display:flex;
+  flex-direction: row;
+  width:200px;
+}
+.author-id {
+  display:flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.passage-item {
+  border: 1px solid #000000;
+  margin:10px;
 }
 </style>

@@ -1,11 +1,14 @@
 <template lang="html">
   <div class="">
-    {{comment_list}}
+    <div class="comment-list" v-for="(item,index) in comment_list.data" :key="index">
+      <CommentListItem :item="item" ></CommentListItem>
+    </div>
   </div>
 </template>
 
 <script>
 import axios from 'axios'
+import CommentListItem from './CommentListItem'
 export default {
   name: 'CommentBoard',
   props: ['passage_id'],
@@ -24,7 +27,10 @@ export default {
     }
   },
   mounted () {
-    this.getComment()
+    this.getComment(this.passage_id)
+  },
+  components: {
+    CommentListItem
   }
 }
 </script>
