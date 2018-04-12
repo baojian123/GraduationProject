@@ -5,9 +5,14 @@
         <img :src="author.user_icon" alt="">
       </div>
       <div class="author-id">
-        <router-link :to="{ path: '/userinfo/' + author.user_id }">{{author.user_id}}</router-link>
+        <router-link :to="{ path: '/userinfo/' + author.user_id }">{{author.user_id}}:</router-link>
       </div>
-      <div class="" v-html="item.comment_content"></div>
+      <div class="content" v-html="item.comment_content"></div>
+      <div class="like-count">
+        <button @click="like(is_)">
+          点赞数{{item.like_count}}
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -20,7 +25,7 @@ export default {
   props: ['item'],
   data () {
     return {
-      author:{
+      author: {
         user_id: '',
         user_icon: ''
       }

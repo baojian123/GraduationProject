@@ -25,6 +25,7 @@ Quill.register('modules/ImageResize', ImageResize)
 Quill.register('modules/ImageExtend', ImageExtend)
 export default {
   name: 'CommentEditor',
+  props: ['passage_id'],
   data () {
     return {
       content: '',
@@ -79,6 +80,6 @@ export default {
   padding-bottom: 1rem;
 }
 .editor {
-  width:1000px;
+  width:700px;
 }
 </style>

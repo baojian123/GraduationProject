@@ -11,12 +11,14 @@
     </div>
     <div class="user-info" v-if="cookie">
       <router-link :to="{ path: '/userinfo/'+user.user_info.user_id }">
-        <div class="icon">
+        <div class="small-icon">
           <img :src="user.user_info.user_icon">
         </div>
       </router-link>
-      <div class="user-name">
-        {{user}}
+      <div class="user-id">
+        <router-link :to="{ path: '/userinfo/'+user.user_info.user_id }">
+          {{user.user_info.user_id}}
+        </router-link>
       </div>
     </div>
     <div class="user-login" v-if="!cookie">
@@ -93,9 +95,13 @@ export default {
   flex-direction: row;
   justify-content: flex-start;
 }
-.icon>img{
-  width:40px;
-  height:40px;
-  border-radius:50%;
+.user-info{
+  display: flex;
+  flex-direction: row;
+}
+.user-id{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 </style>

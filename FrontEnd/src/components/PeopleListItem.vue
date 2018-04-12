@@ -3,9 +3,20 @@
     <div class="small-icon">
       <img :src="item.user_icon" alt="">
     </div>
-    {{item.user_id}}
+    <div class="people-id">
+      <!-- <router-link :to="{ path: '/userinfo/' + item.user_id}">
+        {{item.user_id}}
+      </router-link> -->
+      <a :href="item.user_id">
+        {{item.user_id}}
+      </a>
+      <!-- <router-link :to="{ path: '/userinfo/' + item.user_id}"> -->
+
+    </div>
     <!-- <button type="button" v-if="item.is_followed != undefined" @click="follow(item.user_id,flag)">{{flag? '取消关注':'关注'}}</button> -->
-    <FollowButton :follower_id="cookie" :item="item"></FollowButton>
+    <div class="follow-button">
+      <FollowButton :follower_id="cookie" :item="item"></FollowButton>
+    </div>
   </div>
 </template>
 
@@ -22,6 +33,7 @@ export default {
   },
   methods: {
     follow: function (id, flag) {
+      alert(this.cookie + ' ' + id)
       var json = {
         follower_id: this.cookie,
         following_id: id
@@ -51,4 +63,13 @@ export default {
 </script>
 
 <style lang="css">
+.people {
+  display: flex;
+  flex-direction: row;
+}
+.people-id, .follow-button{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
 </style>

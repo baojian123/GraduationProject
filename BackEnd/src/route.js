@@ -163,6 +163,7 @@ app.use('/passage',function(req,res){
 		user_id: req.body.user_id,
 		passage_id: '',
 		submit_date: req.body.submit_date,
+		passage_title: req.body.passage_title,
 		passage_content: req.body.passage_content,
 		passage_status: '未审核'
 	}
@@ -172,8 +173,8 @@ app.use('/passage',function(req,res){
 		console.log(sqlString);
 		console.log(results);
 		json.passage_id = results[0].count +constant.user_bound +1;
-		sqlString = 'insert into passage(user_id,passage_id,submit_date,passage_content) values(?,?,?,?);';
-		mysql.query(sqlString,[json.user_id,json.passage_id,json.submit_date,json.passage_content],function(results) {
+		sqlString = 'insert into passage(user_id,passage_id,submit_date,passage_title,passage_content) values(?,?,?,?,?);';
+		mysql.query(sqlString,[json.user_id,json.passage_id,json.submit_date,json.passage_title,json.passage_content],function(results) {
 			console.log(json);
 			res.send('提交成功，请等待审核')
 		})
@@ -242,6 +243,21 @@ app.use('/collect', function (req, res) {
 	})
 })
 
+//取消关注
+app.use('/uncollect', function (req, res) {
+	res.header('Access-Control-Allow-Origin', req.header('Origin'));
+	res.header('Access-Control-Allow-Credentials', true);
+	res.header('Access-Control-Allow-Headers', 'content-type,Authorization')
+	res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE')
+	res.header( "Access-Control-Max-Age", "1000" ); //
+	res.header("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
+	var passage_id = req.body.passage_id
+	var sqlString = 'update passage set collect_count = collect_count -1 where passage_id = ?;'
+	mysql.query(sqlString, [passage_id], function (results) {
+		res.write('取消关注')
+		res.send()
+	})
+})
 //提交评论
 app.use('/comment', function (req, res) {
 	res.header('Access-Control-Allow-Origin', req.header('Origin'));
@@ -259,11 +275,14 @@ app.use('/comment', function (req, res) {
 	}
 	var sqlString = 'select count(comment_id) as count from comment;'
 	mysql.query(sqlString, [], function (results) {
-		sqlString = 'insert into comment values(?,?,?,?);'
+		sqlString = 'insert into comment(comment_id,passage_id,user_id,comment_content) values(?,?,?,?);'
 		json.comment_id = results[0].count + constant.user_bound +1;
-		mysql.query(sqlString, [json.comment_id, json.passage_id, json.user_id, json.comment_id],function (results) {
-			res.write('评论成功')
-			res.end();
+		mysql.query(sqlString, [json.comment_id, json.passage_id, json.user_id, json.comment_content],function (results) {
+			sqlString = 'update passage set comment_count = comment_count + 1 ;'
+			mysql.query(sqlString, [], function (results) {
+				res.write('评论成功')
+				res.end();
+			})
 		})
 	})
 })
@@ -304,6 +323,23 @@ app.use('/like', function (req, res) {
 	var sqlString = 'update comment set like_count = like_count + 1 where comment_id = ? ;'
 	mysql.query(sqlString, [comment_id], function (results) {
 		res.write('评论点赞成功')
+		res.send()
+	})
+})
+
+//取消点赞
+app.use('/unlike', function (req,res) {
+	res.header('Access-Control-Allow-Origin', req.header('Origin'));
+	res.header('Access-Control-Allow-Credentials', true);
+	res.header('Access-Control-Allow-Headers', 'content-type,Authorization')
+	res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE')
+	res.header( "Access-Control-Max-Age", "1000" ); //
+	res.header("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
+
+	var comment_id = req.body.comment_id
+	var sqlString = 'updata comment set like_count = like_count - 1 where comment_id = ?;'
+	mysql.query(sqlString, [comment_id], function (results) {
+		res.write('取消点赞')
 		res.send()
 	})
 })

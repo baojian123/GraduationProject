@@ -19,10 +19,12 @@
       </div>
       <div class="comment">
         评论数: {{passage.comment_count}}
-        点赞数:{{passage.collect_count}}
+        <button @click="collect(flag)">
+          点赞数:{{passage.collect_count}}
+        </button>
       </div>
     </div>
-    <CommentBoard :passage_id="passage.passage_id"></CommentBoard>
+    <CommentBoard :passage_id="passage.passage_id" :user_id="user.user_info.user_id"></CommentBoard>
   </div>
 </template>
 

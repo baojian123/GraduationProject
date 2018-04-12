@@ -6,7 +6,7 @@
       <!-- <Dialog :type = "type"></Dialog> -->
     </div>
     <div class="main">
-      <button @click="flag=!flag" type="button" name="button">{{flag}}</button>
+      <!-- <button @click="flag=!flag" type="button" name="button">{{flag}}</button> -->
       <!-- <div class="header"></div> -->
       <div class="content">
         <div class="passage-list"></div>
@@ -14,6 +14,7 @@
           <PassageListItem :passage="passageItem" :user="user"></PassageListItem>
         </div>
       </div>
+        <input type="text" v-model="passage_title">
         <PassageEditor @submitContent="submitContent"></PassageEditor>
     </div>
   </div>
@@ -33,6 +34,7 @@ export default {
       msg: 'hello',
       type: 'login',
       flag: false,
+      passage_title: '',
       passage: {},
       user: {}
     }
@@ -65,6 +67,7 @@ export default {
       // alert(time);
       var json = {
         user_id: this.user.user_info.user_id,
+        passage_title: this.passage_title,
         submit_date: time,
         passage_content: content
       }

@@ -1,6 +1,6 @@
 <template lang="html">
   <div class="">
-    <AuditingTable @submitData="AuditingPassage" :list="passage_list.data" :table_style="table_style" :column_name="['用户ID', '文章ID', '提交日期', '文章内容', '文章状态', '评论数', '点赞数']"></AuditingTable>
+    <AuditingTable @submitData="AuditingPassage" :list="passage_list.data" :table_style="table_style" :column_name="['用户ID', '文章ID', '提交日期', '文章题目', '文章内容', '文章状态', '评论数', '点赞数']"></AuditingTable>
   </div>
 </template>
 

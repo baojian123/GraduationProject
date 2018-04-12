@@ -5,18 +5,16 @@
       <div class="big-icon">
         <img :src="user.user_info.user_icon" alt="">
       </div>
-      {{user}}
-      关注他的人
-      <div class="follower-list" v-for="(item,index) in user.follower_list" :key="index">
-        <PeopleListItem :item="item" :cookie="my_info.user_info.user_id"></PeopleListItem>
-      </div>
-
-      <div class="">
-        他关注的人
-        <div class="following-list" v-for="(item,index) in user.following_list" :key="index" :value="item">
-          <PeopleListItem :item="item" :cookie="my_info.user_info.user_id"></PeopleListItem>
+      {{user.user_info.user_id}}
+      <div class="follow-list">
+        <div class="follower-list">
+          关注他的人
+          <PeopleList :list="user.follower_list" :cookie="my_info.user_info.user_id"></PeopleList>
         </div>
-        {{my_info}}
+        <div class="following-list">
+          他关注的人
+          <PeopleList :list="user.following_list" :cookie="my_info.user_info.user_id"></PeopleList>
+        </div>
       </div>
     </div>
   </div>
@@ -25,6 +23,8 @@
 <script>
 import axios from 'axios'
 import PeopleListItem from '@/components/PeopleListItem'
+import PeopleList from '@/components/PeopleList'
+import '@/css/base.css'
 export default {
   name: 'UserInfo',
   data () {
@@ -136,30 +136,16 @@ export default {
     this.getUserInfo()
   },
   components: {
+    PeopleList,
     PeopleListItem
   }
 }
 </script>
 
 <style lang="css">
-.big-icon>img {
-  width:200px;
-  height:200px;
-  border-radius:50%;
-}
-.small-icon>img{
-  width:40px;
-  height:40px;
-  border-radius:50%;
-}
-.follower-list{
+
+.follow-list{
   display:flex;
   flex-direction: row;
-  justify-content: flex-start;
-}
-.following-list{
-  display:flex;
-  flex-direction: row;
-  justify-content: flex-start;
 }
 </style>
