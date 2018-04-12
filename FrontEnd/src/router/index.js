@@ -6,6 +6,7 @@ import Register from '@/pages/Register.vue'
 import UserInfo from '@/pages/UserInfo.vue'
 import Manage from '@/pages/Manage.vue'
 import ManageLogin from '@/pages/ManageLogin.vue'
+import AuditingPage from '@/pages/AuditingPage.vue'
 Vue.use(Router)
 
 export default new Router({
@@ -35,6 +36,11 @@ export default new Router({
           path: '*'
         }
       ]
+    },
+    {
+      path: '/AuditingPage',
+      name: 'AuditingPage',
+      component: AuditingPage
     },
     {
       path: '/Manage',

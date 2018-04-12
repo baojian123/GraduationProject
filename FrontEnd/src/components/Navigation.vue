@@ -68,7 +68,7 @@ export default {
       const self = this
       var id = this.getCookie('user_id')
       if (this.cookie === true) {
-        axios.post('http://localhost:3000/userInfo', {user_id: id})
+        axios.post('http://localhost:3000/userallinfo', {user_id: id})
           .then(function (response) {
             self.user = response.data
             self.user.user_info.user_icon = require('../assets/icon/' + self.user.user_info.user_icon)

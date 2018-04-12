@@ -10,6 +10,9 @@
       <!-- <div class="header"></div> -->
       <div class="content">
         <div class="passage-list">{{passage}}</div>
+        <div class="" v-for="(passageItem,index) in passage.data" :key="index">
+          <PassageListItem :passage="passageItem"></PassageListItem>
+        </div>
       </div>
         <PassageEditor @submitContent="submitContent"></PassageEditor>
     </div>
@@ -20,6 +23,7 @@
 import axios from 'axios'
 import Navigation from '@/components/Navigation'
 import PassageEditor from '@/components/PassageEditor'
+import PassageListItem from '@/components/PassageListItem'
 // import Dialog from '@/components/Dialog'
 export default {
   name: 'Homepage',
@@ -37,7 +41,7 @@ export default {
     getMyinfo: function () {
       const self = this
       var id = this.getCookie('user_id')
-      axios.post('http://localhost:3000/userInfo', {user_id: id})
+      axios.post('http://localhost:3000/userallinfo', {user_id: id})
         .then(function (response) {
           self.user = response.data
         })
@@ -84,7 +88,7 @@ export default {
     this.getPassage()
   },
   components: {
-    Navigation, PassageEditor
+    Navigation, PassageEditor, PassageListItem
   }
 }
 </script>

@@ -88,7 +88,7 @@ export default {
     getUserInfo: function () {
       const self = this
       this.user.user_id = this.getUrl('user_id')
-      axios.post('http://localhost:3000/userInfo', {user_id: this.user.user_id})
+      axios.post('http://localhost:3000/userallinfo', {user_id: this.user.user_id})
         .then(function (response) {
           if (response.data === undefined) {
           }
@@ -109,7 +109,7 @@ export default {
       var id = this.getCookie('user_id')
       if (id === undefined) {
       }
-      axios.post('http://localhost:3000/userInfo', {user_id: id})
+      axios.post('http://localhost:3000/userallinfo', {user_id: id})
         .then(function (response) {
           self.my_info = response.data
         })

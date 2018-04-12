@@ -42,8 +42,8 @@ var init = function () {
 	// 	user_pwd : "laogewen"
 	// });
 }
-
-app.use('/userInfo',function(req,res){
+//获取用户所有信息
+app.use('/userallinfo', function(req,res){
 	res.header('Access-Control-Allow-Origin', req.header('Origin'));
 	res.header('Access-Control-Allow-Credentials', true);
 	res.header('Access-Control-Allow-Headers', 'content-type,Authorization')
@@ -91,6 +91,33 @@ app.use('/userInfo',function(req,res){
 		});
 	})
 });
+
+//获取用户头像
+app.use('/getusericon', function (req, res){
+	res.header('Access-Control-Allow-Origin', req.header('Origin'));
+	res.header('Access-Control-Allow-Credentials', true);
+	res.header('Access-Control-Allow-Headers', 'content-type,Authorization')
+	res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE')
+	res.header( "Access-Control-Max-Age", "1000" ); //
+	res.header("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
+
+	var user_id = req.body.user_id
+	var json ={
+		user_id: '',
+		user_icon: '',
+	}
+	var sqlString = 'select user_id, user_icon from user where user_id = ?;'
+	mysql.query(sqlString, [user_id], function (results) {
+		if (results.length == 1){
+			json.user_id = results[0].user_id
+			json.user_icon = results[0].user_icon
+			res.write(JSON.stringify(json))
+		} else {
+			res.write('用户不存在')
+		}
+		res.send()
+	})
+})
 
 //关注
 app.use('/follow',function(req,res){
@@ -183,8 +210,9 @@ app.use('/getallpassage', function (req, res) {
 	res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE')
 	res.header( "Access-Control-Max-Age", "1000" ); //
 	res.header("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
-	var sqlString = 'select * from passage order by submit_date desc;'
-	// var sqlString = "select * from passage where passage_status = '已审核' order by submit_date desc;"
+
+	// var sqlString = 'select * from passage order by submit_date desc;'
+	var sqlString = "select * from passage where passage_status = '已审核' order by submit_date desc;"
 	var json = {
 		data:[]
 	}
@@ -196,6 +224,23 @@ app.use('/getallpassage', function (req, res) {
 		res.end();
 	})
 });
+
+//关注攻略
+app.use('/collect', function (req, res) {
+	res.header('Access-Control-Allow-Origin', req.header('Origin'));
+	res.header('Access-Control-Allow-Credentials', true);
+	res.header('Access-Control-Allow-Headers', 'content-type,Authorization')
+	res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE')
+	res.header( "Access-Control-Max-Age", "1000" ); //
+	res.header("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
+
+	var passage_id = req.body.passage_id
+	var sqlString = 'update passage set collect_count = collect_count + 1 where passage_id = ? ;'
+	mysql.query(sqlString, [passage_id], function (results) {
+		res.write('关注攻略成功')
+		res.send()
+	})
+})
 
 //提交评论
 app.use('/comment', function (req, res) {
@@ -243,6 +288,43 @@ app.use('/getcomment', function (req,res) {
 		}
 		res.write(JSON.stringify(json))
 		res.send();
+	})
+})
+
+//评论点赞
+app.use('/like', function (req, res) {
+	res.header('Access-Control-Allow-Origin', req.header('Origin'));
+	res.header('Access-Control-Allow-Credentials', true);
+	res.header('Access-Control-Allow-Headers', 'content-type,Authorization')
+	res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE')
+	res.header( "Access-Control-Max-Age", "1000" ); //
+	res.header("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
+
+	var comment_id = req.body.comment_id
+	var sqlString = 'update comment set like_count = like_count + 1 where comment_id = ? ;'
+	mysql.query(sqlString, [comment_id], function (results) {
+		res.write('评论点赞成功')
+		res.send()
+	})
+})
+
+//文章审核通过
+app.use('/auditingpassage', function (req, res) {
+	res.header('Access-Control-Allow-Origin', req.header('Origin'));
+	res.header('Access-Control-Allow-Credentials', true);
+	res.header('Access-Control-Allow-Headers', 'content-type,Authorization')
+	res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE')
+	res.header( "Access-Control-Max-Age", "1000" ); //
+	res.header("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
+
+	var passage_id = req.body.passage_id
+	var json = {
+		data:[]
+	}
+	var sqlString = "update passage set passage_status = '已审核' where passage_id = ? ;"
+	mysql.query(sqlString, [passage_id], function (results) {
+		res.write('审核通过')
+		res.send()
 	})
 })
 
@@ -344,6 +426,7 @@ app.use('/data',function(req,res){
 		// require('./loginRequest').start();
 });
 
+//查询火车班次
 app.use('/query',function(req,res){
 	// res.setHeader( "Access-Control-Allow-Headers","Origin, X-Requested-With, Content-Type, Accept");//
 	// res.setHeader( "Access-Control-Allow-Origin", "*" ); //可以访问此域资源的域。*为所有
@@ -397,6 +480,17 @@ app.use('/query',function(req,res){
 	});
 	request.end();
 });
+
+//添加酒店信息
+app.use('/addhotel', function (req, body) {
+	res.header('Access-Control-Allow-Origin', req.header('Origin'));
+	res.header('Access-Control-Allow-Credentials', true);
+	res.header('Access-Control-Allow-Headers', 'content-type,Authorization')
+	res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE')
+	res.header( "Access-Control-Max-Age", "1000" ); //
+	res.header("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
+
+})
 
 //登陆
 app.use('/login',function(req,res){
