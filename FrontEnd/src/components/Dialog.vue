@@ -1,38 +1,23 @@
 <template>
-  <div >
-    <div class="curtain" @click="show=false">
-    </div>
-    <div class="vertical-center">
+  <div class="dialog-background">
 
-    </div>
-    <div class="horizontal-center">
+    <div class="horizontal-center" >
+      <div class="vertical-center">
+        <div class="dialog" >
+          <div v-if="type === 'html'" class="html">
+            <div class="passage-title">
+              <h1>{{passage.passage_title}}</h1>
+            </div>
+            <div class="passage-content"  v-html="passage.passage_content">
 
-    </div>
-    <div class="dialog">
-      <div class="tab login" @click="type='login'">
-        <p>登陆</p>
-        {{type}}
-      </div>
-      <div class="tab register" @click="type='register'">
-        <p>注册</p>
-      </div>
-      <div class="exit" @click="show=false"></div>
-      <div class="content">
-        <div class="form">
-          <div class="input username">
-            用户名:
-            <input type="text" v-model="user.user_id">
+            </div>
           </div>
-          <div class="input password">
-            密码:
-            <input type="text" v-model="user.user_pwd">
-          </div>
-          <div class="submit button" @click="submitData">
-            提交
-          </div>
+        </div>
+        <div class="curtain" @click="closeDialog">
         </div>
       </div>
     </div>
+
   </div>
 </template>
 
@@ -41,10 +26,9 @@
 import '@/css/base.css'
 export default {
   name: 'Dialog',
-  props: ['type'],
+  props: ['type', 'passage'],
   data () {
     return {
-      show: false,
       user: {
         user_id: '',
         user_pwd: '',
@@ -54,7 +38,6 @@ export default {
   },
   methods: {
     submitData: function () {
-      this.type = 'haha'
       // // const self = this
       // var url
       // if (this.type === 'login') {
@@ -67,26 +50,56 @@ export default {
       //   .then(function (response) {
       //
       //   })
+    },
+    closeDialog: function () {
+      this.$emit('closeDialog', false)
     }
   }
 }
 </script>
 
-<style lang="css">
+<style scoped>
+.dialog-background{
+  position: fixed;
+  z-index: 5;
+}
 .curtain {
   position:fixed;
   top:0;
   bottom:0;
   left:0;
   right:0;
-  background-color: rgba(0,0,0,.7)
+  background-color: rgba(0,0,0,.7);
+  z-index: 8;
+}
+.horizontal-center {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  position:fixed;
+  top:0;
+  bottom:0;
+  left:0;
+  right:0;
+}
+.vertical-center {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height:100%;
 }
 .dialog {
-  position:absolute;
-  min-height:600px;
-  max-height:700px;
+  min-width:500px;
+  min-height:400px;
   border-radius: 5px;
   background-color:#ffffff;
+  z-index: 12;
 }
-
+.html {
+  min-width:800px;
+  max-width:800px;
+}
+.passage-title {
+  text-align: center;
+}
 </style>

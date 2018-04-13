@@ -47,5 +47,15 @@ export default {
 }
 </script>
 
-<style lang="css">
+<style scoped>
+.author {
+  display:flex;
+  flex-direction: row;
+  width:200px;
+}
+.author-id {
+  display:flex;
+  flex-direction: column;
+  justify-content: center;
+}
 </style>

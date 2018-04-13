@@ -1,17 +1,16 @@
 <template>
-  <div  class = "Homepage">
+  <div  class = "Homepage" style="z-index:1;">
     <Navigation :color = "colorMsg"></Navigation>
     <div class="left-nav">
       {{type}}
-      <!-- <Dialog :type = "type"></Dialog> -->
     </div>
+    <Dialog @closeDialog="closeDialog" v-if="show_dialog" :type = "type" :passage="content"></Dialog>
     <div class="main">
       <!-- <button @click="flag=!flag" type="button" name="button">{{flag}}</button> -->
       <!-- <div class="header"></div> -->
       <div class="content">
-        <div class="passage-list"></div>
         <div class="" v-for="(passageItem,index) in passage.data" :key="index">
-          <PassageListItem :passage="passageItem" :user="user"></PassageListItem>
+          <PassageListItem  @previewPassage="previewPassage" :passage="passageItem" :user="user"></PassageListItem>
         </div>
       </div>
         <input type="text" v-model="passage_title">
@@ -25,7 +24,9 @@ import axios from 'axios'
 import Navigation from '@/components/Navigation'
 import PassageEditor from '@/components/PassageEditor'
 import PassageListItem from '@/components/PassageListItem'
-// import Dialog from '@/components/Dialog'
+import Dialog from '@/components/Dialog'
+
+import notice from '@/js/notice.js'
 export default {
   name: 'Homepage',
   data () {
@@ -33,7 +34,8 @@ export default {
       colorMsg: '#555555',
       msg: 'hello',
       type: 'login',
-      flag: false,
+      show_dialog: false,
+      content: '',
       passage_title: '',
       passage: {},
       user: {}
@@ -84,6 +86,14 @@ export default {
         .then(function (response) {
           self.passage = response.data
         })
+    },
+    previewPassage: function (passage) {
+      this.type = 'html'
+      this.content = passage
+      this.show_dialog = true
+    },
+    closeDialog: function (is_show) {
+      this.show_dialog = is_show
     }
   },
   mounted () {
@@ -91,7 +101,7 @@ export default {
     this.getPassage()
   },
   components: {
-    Navigation, PassageEditor, PassageListItem
+    Navigation, PassageEditor, PassageListItem, Dialog
   }
 }
 </script>

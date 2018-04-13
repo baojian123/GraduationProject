@@ -4,6 +4,7 @@
 
 <script>
 import axios from 'axios'
+import notice from '@/js/notice.js'
 export default {
   name: 'FollowButton',
   props: ['follower_id', 'item'],
@@ -29,6 +30,7 @@ export default {
       console.log(json)
       axios.post(url, json)
         .then(function (response) {
+          notice.alert(1, response.data, 2)
         })
     }
   },
@@ -38,5 +40,5 @@ export default {
 }
 </script>
 
-<style lang="css">
+<style scoped>
 </style>

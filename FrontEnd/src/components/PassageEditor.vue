@@ -2,7 +2,7 @@
   <div>
     <div class="preview" v-html="content">
     </div>
-    <div class="editor">
+    <div class="passage editor">
       <quillEditor v-model="content" :options="editorOption"></quillEditor>
     </div>
     <button @click="getContent()" type="button" name="button">查看内容</button>
@@ -24,7 +24,7 @@ Quill.register('modules/ImageDrop', ImageDrop)
 Quill.register('modules/ImageResize', ImageResize)
 Quill.register('modules/ImageExtend', ImageExtend)
 export default {
-  name: 'PassageEditor',
+  name: 'PassEditor',
   data () {
     return {
       content: '',
@@ -72,8 +72,8 @@ export default {
 </script>
 
 <style lang="css">
-.quill-editor:not(.bubble) .ql-container,
-.quill-editor:not(.bubble) .ql-container .ql-editor {
+.passage>.quill-editor:not(.bubble) .ql-container,
+.passage>.quill-editor:not(.bubble) .ql-container .ql-editor {
   min-height: 10rem;
   max-height: 25rem;
   padding-bottom: 1rem;

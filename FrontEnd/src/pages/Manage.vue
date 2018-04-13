@@ -118,7 +118,7 @@ export default {
 }
 </script>
 
-<style lang="css">
+<style scoped>
 .left-nav{
   position: absolute;
   left: 0%;

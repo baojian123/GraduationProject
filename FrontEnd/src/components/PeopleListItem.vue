@@ -62,7 +62,7 @@ export default {
 }
 </script>
 
-<style lang="css">
+<style scoped>
 .people {
   display: flex;
   flex-direction: row;

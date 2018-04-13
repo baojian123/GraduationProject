@@ -142,7 +142,7 @@ export default {
 }
 </script>
 
-<style lang="css">
+<style scoped>
 
 .follow-list{
   display:flex;

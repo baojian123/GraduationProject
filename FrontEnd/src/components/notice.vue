@@ -1,13 +1,12 @@
 <template lang="html">
-  <div class="manage">
-    <a href="#">123</a>
-  </div>
+
 </template>
 
 <script>
+import notice from '@/js/notice.js'
 export default {
 }
 </script>
 
-<style scoped>
+<style lang="css">
 </style>

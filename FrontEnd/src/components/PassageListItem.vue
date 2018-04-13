@@ -1,7 +1,9 @@
 <template lang="html">
   <div class="passage-item">
+    {{passage.passage_title}}
     <div class="passage-content" v-html="passage.passage_content">
     </div>
+    <button  @click="previewPassage(passage)">预览</button>
     <div class="passage-footer">
       <div class="author">
         <div class="small-icon">
@@ -76,7 +78,15 @@ export default {
           self.author.user_id = self.passage.user_id
           self.author.is_followed = self.isFollowed(self.passage.user_id)
         })
+    },
+    previewPassage: function (passage) {
+
+      this.$emit('previewPassage', passage)
     }
+    // closeDialog: function (is_show) {
+    //   alert(312)
+    //   this.$emit('closeDialog', is_show)
+    // }
   },
   mounted () {
     this.getUserIcon(this.passage.user_id)
@@ -88,7 +98,8 @@ export default {
 }
 </script>
 
-<style lang="css">
+<style scoped>
+
 .author {
   display:flex;
   flex-direction: row;

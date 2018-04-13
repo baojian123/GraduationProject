@@ -2,7 +2,7 @@
   <div>
     <div class="preview" v-html="content">
     </div>
-    <div class="editor">
+    <div class="comment editor">
       <quillEditor v-model="content" :options="editorOption"></quillEditor>
     </div>
     <button @click="getContent()" type="button" name="button">查看内容</button>
@@ -72,9 +72,9 @@ export default {
 }
 </script>
 
-<style lang="css">
-.quill-editor:not(.bubble) .ql-container,
-.quill-editor:not(.bubble) .ql-container .ql-editor {
+<style scoped>
+.comment>.quill-editor:not(.bubble) .ql-container,
+.comment>.quill-editor:not(.bubble) .ql-container .ql-editor {
   min-height: 4rem;
   max-height: 6rem;
   padding-bottom: 1rem;

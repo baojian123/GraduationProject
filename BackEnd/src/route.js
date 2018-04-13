@@ -119,6 +119,36 @@ app.use('/getusericon', function (req, res){
 	})
 })
 
+//修改密码
+app.user('/changepassword', function (req, res) {
+	res.header('Access-Control-Allow-Origin', req.header('Origin'));
+	res.header('Access-Control-Allow-Credentials', true);
+	res.header('Access-Control-Allow-Headers', 'content-type,Authorization')
+	res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE')
+	res.header( "Access-Control-Max-Age", "1000" ); //
+	res.header("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
+
+	var user_pwd = req.body.user_pwd
+	var user_id = req.body.user_id
+	var sqlString = 'update user set user_pwd = ? where user_id = ? ;'
+	mysql.query(sqlString, [user_pwd, user_id], function (results) {
+		res.write('修改成功')
+		res.send()
+	})
+})
+
+// 未完成
+//重置密码
+app.user('/resetpassword', function (req, res) {
+	res.header('Access-Control-Allow-Origin', req.header('Origin'));
+	res.header('Access-Control-Allow-Credentials', true);
+	res.header('Access-Control-Allow-Headers', 'content-type,Authorization')
+	res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE')
+	res.header( "Access-Control-Max-Age", "1000" ); //
+	res.header("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
+
+
+})
 //关注
 app.use('/follow',function(req,res){
 	res.header('Access-Control-Allow-Origin', req.header('Origin'));

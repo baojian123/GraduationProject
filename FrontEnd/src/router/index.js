@@ -33,7 +33,7 @@ export default new Router({
       component: UserInfo,
       children: [
         {
-          path: '/*'
+          path: '*'
         }
       ]
     },
