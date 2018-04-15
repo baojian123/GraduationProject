@@ -1,13 +1,23 @@
 <template lang="html">
   <div class="header" :style="{ backgroundColor: color }">
-    <div class="left-nav">
-
+    <div class="small-icon logo">
+      <img src="../assets/icon/default-icon.jpg" alt="">
     </div>
-    <div class="logo">
-      <img src="" alt="">
+    <div class="title" style="color:#e8e8e8;">
+      <h3>
+        交游旅游网站
+      </h3>
     </div>
     <div class="nav-list">
-
+      <div class="homepage nav-list-item">
+        <router-link :to="{ path: '/' }">首页</router-link>
+      </div>
+      <div class="hotel nav-list-item">
+        <router-link :to="{ path: '/hotel' }">酒店</router-link>
+      </div>
+      <div class="train nav-list-item">
+        <router-link :to="{ path: '/train' }">火车</router-link>
+      </div>
     </div>
     <div class="user-info" v-if="cookie">
       <router-link :to="{ path: '/userinfo/'+user.user_info.user_id }">
@@ -93,7 +103,9 @@ export default {
   height: 50px;
   display: flex;
   flex-direction: row;
-  justify-content: flex-start;
+  justify-content:space-between;
+  padding-left: 20px;
+  padding-right: 20px;
 }
 .user-info{
   display: flex;
@@ -103,5 +115,17 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: center;
+}
+.nav-list {
+  display:flex;
+  flex-direction: row;
+  width:800px;
+}
+.nav-list-item {
+  padding: 20px;
+  /* height:100%;
+  display:flex;
+  flex-direction: column;
+  justify-content:center; */
 }
 </style>

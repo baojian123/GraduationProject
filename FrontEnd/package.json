@@ -16,10 +16,13 @@
   "dependencies": {
     "axios": "^0.18.0",
     "jsonp": "^0.2.1",
+    "less-loader": "^4.1.0",
+    "nodemailer": "^4.6.4",
     "quill-image-drop-module": "^1.0.3",
     "quill-image-extend-module": "^1.1.2",
     "quill-image-resize-module": "^3.0.0",
     "vue": "^2.5.2",
+    "vue-date": "^1.1.7",
     "vue-quill-editor": "^3.0.6",
     "vue-router": "^3.0.1",
     "wangeditor": "^3.1.0"

@@ -20,6 +20,13 @@ CREATE TABLE user(
 );
 ```
 ---
+## 重置密码表 resetpwd
+字段|类型|是否为空|含义|约束条件
+:-:|:-:|:-:|:-:|:-:
+user_id|varchar(32)|not null|用户ID|外键(user)
+apply_time|date|not null|申请时间|
+check_key|varchar(32)|not null|验证码|
+---
 ## 管理员表 manager
 字段|类型|是否为空|含义|约束条件
 :-:|:-:|:-:|:-:|:-:
@@ -116,7 +123,8 @@ CREATE TABLE follow(
 字段|类型|是否为空|含义|约束条件
 :-:|:-:|:-:|:-:|:-:
 hotel_id|int|not null|酒店ID|主键
-hotel_adress|varchar(200)|null|酒店地址|
+hotel_name|varchar(32)|not null|酒店名字|
+hotel_address|varchar(200)|null|酒店地址|
 hotel_describe|text|null|酒店描述|
 hotel_rank|numeric(10,5)|not null|酒店星级|
 
@@ -124,9 +132,10 @@ hotel_rank|numeric(10,5)|not null|酒店星级|
 ```
 CREATE TABLE hotel(
   hotel_id int not null,
-  hotel_adress varchar(200) null,
+  hotel_name varchar(32) not null,
+  hotel_address varchar(200) null,
   hotel_describe text null,
-  hotel_rank numeric(10,5) not null,
+  hotel_rank numeric(10,5) not null default 0,
   CONSTRAINT PRIMARY KEY (hotel_id)
 );
 ```

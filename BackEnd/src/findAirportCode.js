@@ -7,3 +7,18 @@ var findIATACode = function(cityName) {
   console.log(code);
   return code
 }
+
+var air_company = {"G5":"华夏航空","9C":"春秋航空","MU":"东方航空","NS":"河北航空","HU":"海南航空","HO":"吉祥航空","CZ":"南方航空","FM":"上海航空","ZH":"深圳航空","MF":"厦门航空","CA":"中国国航","KN":"中国联航"}
+
+var json = {
+  alc: 航空公司
+  fn: 航班编码
+  dpc:出发城市
+  apc:抵达城市
+  dpbn: 出发机场
+  apbn:抵达机场
+  dt:航班起飞时间
+  at:航班降落时间
+  lp:机票价格
+  tax:机场建设费
+}

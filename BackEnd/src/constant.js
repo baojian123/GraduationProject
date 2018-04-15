@@ -5,5 +5,7 @@ var  day=hour*24;
 //用户基数
 var user_bound=10000;
 
-exports.day=day;
-exports.user_bound=user_bound;
+exports.minute = minute
+exports.hour = hour
+exports.day = day;
+exports.user_bound = user_bound;

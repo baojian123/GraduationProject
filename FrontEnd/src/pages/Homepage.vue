@@ -1,13 +1,11 @@
 <template>
   <div  class = "Homepage" style="z-index:1;">
     <Navigation :color = "colorMsg"></Navigation>
-    <div class="left-nav">
-      {{type}}
-    </div>
     <Dialog @closeDialog="closeDialog" v-if="show_dialog" :type = "type" :passage="content"></Dialog>
     <div class="main">
       <!-- <button @click="flag=!flag" type="button" name="button">{{flag}}</button> -->
       <!-- <div class="header"></div> -->
+      <ButtonSet></ButtonSet>
       <div class="content">
         <div class="" v-for="(passageItem,index) in passage.data" :key="index">
           <PassageListItem  @previewPassage="previewPassage" :passage="passageItem" :user="user"></PassageListItem>
@@ -21,10 +19,12 @@
 
 <script>
 import axios from 'axios'
+import DatePicker from 'vue-date'
 import Navigation from '@/components/Navigation'
 import PassageEditor from '@/components/PassageEditor'
 import PassageListItem from '@/components/PassageListItem'
 import Dialog from '@/components/Dialog'
+import ButtonSet from '@/components/ButtonSet'
 
 import notice from '@/js/notice.js'
 export default {
@@ -35,6 +35,7 @@ export default {
       msg: 'hello',
       type: 'login',
       show_dialog: false,
+      date: '2018-04-14',
       content: '',
       passage_title: '',
       passage: {},
@@ -101,7 +102,7 @@ export default {
     this.getPassage()
   },
   components: {
-    Navigation, PassageEditor, PassageListItem, Dialog
+    Navigation, PassageEditor, PassageListItem, Dialog, DatePicker, ButtonSet
   }
 }
 </script>

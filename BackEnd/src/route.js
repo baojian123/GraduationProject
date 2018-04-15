@@ -4,17 +4,29 @@ var app = express();
 var bodyParser=require('body-parser');
 var https = require('https');
 var qs = require('querystring');
-
+	var nodemailer = require('nodemailer')
 
 var mysql = require('./mysql-connection');
 var constant = require('./constant');
 var cityCode = require('./cityCode')
+var tuNiu = require('./tuniuAPI')
 console.log(typeof(constant.day))
 var cookieConfigure={maxAge:30*constant.day,path:'/',httpOnly:false};
 
 // var DB = 'DigDugDog';
 var DB = 'Graduation_Project';
 
+var getRandom = function (length) {
+	var str = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+	var max = 62
+	var temp
+	var check_key = ''
+	for (var i = 0; i < length; i++) {
+		temp = Math.floor(Math.random()*max)
+		check_key+=str[temp]
+	}
+	return check_key
+}
 
 app.use(bodyParser.json());
 
@@ -42,6 +54,47 @@ var init = function () {
 	// 	user_pwd : "laogewen"
 	// });
 }
+
+//添加酒店
+app.use('/addhotel', function (req, res) {
+	res.header('Access-Control-Allow-Origin', req.header('Origin'));
+	res.header('Access-Control-Allow-Credentials', true);
+	res.header('Access-Control-Allow-Headers', 'content-type,Authorization')
+	res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE')
+	res.header( "Access-Control-Max-Age", "1000" ); //
+	res.header("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
+
+	var hotel_id = 0
+	var hotel_name = req.body.hotel_name
+	var hotel_address = req.body.hotel_address
+	var hotel_describe = req.body.hotel_describe
+	var sqlString = 'select count(hotel_id) as count from hotel;'
+	mysql.query(sqlString, [], function (results) {
+		sqlString = 'insert into hotel(hotel_id,hotel_name,hotel_address,hotel_describe) values(?,?,?,?)'
+		hotel_id = results[0].count + constant.user_bound + 1
+		mysql.query(sqlString,[hotel_id,hotel_name,hotel_address,hotel_describe],function (results){
+			res.write('添加酒店成功')
+			res.send()
+		})
+
+	})
+})
+
+//获取酒店
+app.use('/gethotel', function (req, res) {
+	res.header('Access-Control-Allow-Origin', req.header('Origin'));
+	res.header('Access-Control-Allow-Credentials', true);
+	res.header('Access-Control-Allow-Headers', 'content-type,Authorization')
+	res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE')
+	res.header( "Access-Control-Max-Age", "1000" ); //
+	res.header("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
+
+	var sqlString = "select * from hotel where hotel_address like '省?市%';"
+	var city_name = req.body.city_name
+	var json = []
+
+	var url = 'http://hotel.tuniu.com/ajax/list?search%5Bcity%5D=602&search%5BcheckInDate%5D=2018-4-16&search%5BcheckOutDate%5D=2018-4-17&search%5BcityCode%5D=602&page=1'
+})
 //获取用户所有信息
 app.use('/userallinfo', function(req,res){
 	res.header('Access-Control-Allow-Origin', req.header('Origin'));
@@ -120,7 +173,7 @@ app.use('/getusericon', function (req, res){
 })
 
 //修改密码
-app.user('/changepassword', function (req, res) {
+app.use('/changepassword', function (req, res) {
 	res.header('Access-Control-Allow-Origin', req.header('Origin'));
 	res.header('Access-Control-Allow-Credentials', true);
 	res.header('Access-Control-Allow-Headers', 'content-type,Authorization')
@@ -137,9 +190,8 @@ app.user('/changepassword', function (req, res) {
 	})
 })
 
-// 未完成
-//重置密码
-app.user('/resetpassword', function (req, res) {
+// 发送重置密码右键
+app.use('/resetpassword', function (req, res) {
 	res.header('Access-Control-Allow-Origin', req.header('Origin'));
 	res.header('Access-Control-Allow-Credentials', true);
 	res.header('Access-Control-Allow-Headers', 'content-type,Authorization')
@@ -147,8 +199,103 @@ app.user('/resetpassword', function (req, res) {
 	res.header( "Access-Control-Max-Age", "1000" ); //
 	res.header("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
 
+	var user_id = req.body.user_id
+	var apply_time = new Date()
+	var check_key = getRandom(32)
 
+	var sqlString = 'select user_email from user where user_id = ? '
+	mysql.query(sqlString, [user_id], function (results) {
+		if (results.length === 0 ) {
+			res.write('用户不存在')
+			res.send()
+		}
+		else{
+			var user_email = results[0]
+
+			sqlString = 'insert into resetpwd values(?,?,?);'
+			mysql.query(sqlString, [user_id, apply_time, check_key], function (results) {
+				var transporter = nodemailer.createTransport({
+					service: 'qq',
+					port: 465,
+					auth: {
+						user: '351211168@qq.com',
+						pass: 'axvfsohdnkswbgdf' //授权码,通过QQ获取
+					}
+				})
+				var host = sever.address().address;
+				var port = sever.address().port;
+
+				var querystring = {
+					user_id: user_id,
+					apply_date: apply_date,
+					check_key: check_key
+				}
+
+				var url = host + port + '/checkingkey/' + qs.stringify(querystring)
+				console.log(url)
+				var mailOptions = {
+					from: '351211168@qq.com',
+					to: user_email,
+					subject: '交游旅游网站——账户密码重置',
+					html: '你好！亲爱的' + user_id + '点击一下链接即可重置你的账户密码<a href="' + url + '"> ' + url + ''
+				}
+
+				transporter.sendMail(mailOptions, function (err, info) {
+					if (err) {
+						console.log(err)
+						return
+					}
+					console.log(info)
+				})
+			})
+		}
+	})
 })
+
+// 重置密码
+app.use('/checkingkey', function (req, res) {
+	res.header('Access-Control-Allow-Origin', req.header('Origin'));
+	res.header('Access-Control-Allow-Credentials', true);
+	res.header('Access-Control-Allow-Headers', 'content-type,Authorization')
+	res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE')
+	res.header( "Access-Control-Max-Age", "1000" ); //
+	res.header("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
+
+	var length = Math.floor(Math.random() * 16 + 16)
+	var user_id = req.querystring.user_id
+	var apply_time = req.querystring.apply_time
+	var check_key = req.querystring.check_key
+	var user_pwd = getRandom(length)
+	var now_time = new Date ()
+	var expires_time = 0.5 * constant.hour
+	var sqlString = 'select * from resetpwd where user_id = ?;'
+	mysql.query(sqlString, [user_id], function (results) {
+		if (results.length != 0) {
+			if (check_key == results) {
+				if (now_time - apply_time <=expires_time) {
+					sqlString = 'update user set user_pwd = ? where user_id = ? ;'
+					mysql.query(sqlString,[user_pwd, user_id], function (results) {
+						var json = {
+							user_pwd: user_pwd
+						}
+						res.write(JSON.stringify(json))
+						res.send()
+					})
+				}else {
+					res.write("该链接已过期")
+					res.send()
+				}
+			}else {
+				res.write("链接错误")
+				res.send()
+			}
+		}else {
+			res.write("该用户尚未申请重置密码")
+			res.send()
+		}
+	})
+})
+
 //关注
 app.use('/follow',function(req,res){
 	res.header('Access-Control-Allow-Origin', req.header('Origin'));
@@ -227,6 +374,7 @@ app.use('/getpassage', function (req,res) {
 	mysql.query(sqlString,[user_id],function (results){
 		for (var i in results) {
 			json.data[i] = results[i];
+			json.data[i].submit_date = new Date(results[i].submit_date).toLocaleDateString()
 		}
 		res.write(JSON.stringify(json));
 		res.end();
@@ -250,11 +398,27 @@ app.use('/getallpassage', function (req, res) {
 	mysql.query(sqlString, [], function (results) {
 		for ( var i in results) {
 			json.data[i] = results[i]
+			json.data[i].submit_date = new Date(results[i].submit_date).toLocaleDateString()
+			// console.log(typeof(results[i].submit_date))
+			// console.log(new Date(results[i].submit_date).toLocaleDateString())
 		}
 		res.write(JSON.stringify(json))
 		res.end();
 	})
 });
+
+// 未完成
+//举报文章
+app.use('/reportpassage', function (req, res) {
+	res.header('Access-Control-Allow-Origin', req.header('Origin'));
+	res.header('Access-Control-Allow-Credentials', true);
+	res.header('Access-Control-Allow-Headers', 'content-type,Authorization')
+	res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE')
+	res.header( "Access-Control-Max-Age", "1000" ); //
+	res.header("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
+
+	// var sql =
+})
 
 //关注攻略
 app.use('/collect', function (req, res) {
@@ -410,6 +574,7 @@ app.use('/getauditingpassage', function (req, res) {
 	mysql.query(sqlString, [], function (results) {
 		for (var i in results) {
 			json.data[i] = results[i]
+			json.data[i].submit_date = new Date(results[i].submit_date).toLocaleDateString()
 		}
 		res.write(JSON.stringify(json))
 		res.send()
@@ -617,6 +782,7 @@ app.use('/register',function(req,res){
 	var sqlString='select * from user where user_id = ? ;';
 	var user_id=req.body.user_id;
 	var user_pwd=req.body.user_pwd;
+	var user_email = req.body.user_email;
 	mysql.query(sqlString,[user_id],function(results){
 		console.log("length"+results.length)
 		if(results.length){
@@ -626,7 +792,7 @@ app.use('/register',function(req,res){
 			res.cookie('user','user_id='+user_id,cookieConfigure);
 			console.log("注册成功");
 			res.write("注册成功");
-			sqlString='insert into user(user_id,user_pwd) values(?,?);'
+			sqlString='insert into user(user_id,user_pwd,user_email) values(?,?,?);'
 			mysql.query(sqlString,[user_id,user_pwd],function(results){
 				console.log('插入成功:'+results);
 			});

@@ -8,6 +8,10 @@
             用户名:
             <input type="text" v-model="user.user_id">
           </div>
+          <div class="email">
+            邮箱:
+            <input type="text" v-model="user.user_email">
+          </div>
           <div class="input password">
             密码:
             <input type="password" v-model="user.user_pwd">
@@ -33,7 +37,8 @@ export default{
     return {
       user: {
         user_id: '',
-        user_pwd: ''
+        user_pwd: '',
+        user_email: ''
       },
       repeat_pwd: '',
       message: ''

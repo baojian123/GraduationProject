@@ -1,50 +1,50 @@
 var http=require('http');
-
-// var data = {
-//   user_name: 'aaa',
-//   user_pwd: '123'
-// };
-
-var data = {"IsBus":false,"Filter":"0","Catalog":"","IsGaoTie":false,"IsDongChe":false,"CatalogName":"","DepartureCity":"beijing","ArrivalCity":"hangzhou","HubCity":"","DepartureCityName":"北京","ArrivalCityName":"杭州","DepartureDate":"2018-03-21","DepartureDateReturn":"2018-03-22","ArrivalDate":"","TrainNumber":""};
-
-var option = {
-  hostname: 'trains.ctrip.com',
-  port: 80,
-  path: 'http://trains.ctrip.com/TrainBooking/Ajax/SearchListHandler.ashx?Action=getSearchList',
-  method: 'POST',
-  // json: true,
-  rejectUnauthorized: true,
-  headers: {
-    'Accept':'*/*',
-     "Connection": "keep-alive",
-     // "Content-Length": 111,
-     'Accept-Encoding': 'gzip, deflate',
-    'Accept-Language': 'zh-CN,zh;q=0.8',
-     "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.104 Safari/537.36 Core/1.53.4549.400 QQBrowser/9.7.12900.400"  ,
-     "Origin": 'http://trains.ctrip.com',
-    "Referer": "http://trains.ctrip.com/TrainBooking/Search.aspx?from=beijing&to=&day=2&number=&fromCn=%B1%B1%BE%A9&toCn=%BA%BC%D6%DD"
- }
+var querystring=require('querystring');
+//发送 http Post 请求
+var postData=querystring.stringify({IsBus:false,
+  Filter:"0",
+  Catalog:"",
+  IsGaoTie:false,
+  IsDongChe:false,
+  CatalogName:"",
+  DepartureCity:"hangzhou",
+  ArrivalCity:"guangzhou",
+  HubCity:"",
+  DepartureCityName:"杭州",
+  ArrivalCityName:"广州",
+  DepartureDate:"2018-05-17",
+  DepartureDateReturn:"2018-05-19",
+  ArrivalDate:"",
+  TrainNumber:""})
+function _TEXT(wrap) {
+    return wrap.toString().match(/\/\*\s([\s\S]*)\s\*\//);
 }
 
-var json = JSON.stringify(data);
-var start = function(){
-  console.log("请求车票");
-  var req=http.request(option,function(res){
-    console.log("STATUS:" + res.statusCode);
+var options={
+   hostname:'hotel.tuniu.com',
+   port:80,
+   path:'http://trains.ctrip.com/TrainBooking/Ajax/SearchListHandler.ashx?Action=getSearchList',
+   method:'POST',
+   headers:{
+    //'Content-Type':'application/x-www-form-urlencoded',
+    'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8',
+    'Content-Length':Buffer.byteLength(postData)
+  }
+}
+var req=http.request(options, function(res) {
+    console.log('Status:',res.statusCode);
+    console.log('headers:',JSON.stringify(res.headers));
     res.setEncoding('utf-8');
-    res.on('data',function(data){
-      console.log(data);
-    })
-  });
-
-  req.on('error',function(e){
-    console.log(e.message);
-  })
-
-  req.write(json);
-
-  req.end();
-}();
-
-exports.start = start;
+    res.on('data',function(chun){
+        console.log('body分隔线---------------------------------\r\n');
+        console.info(chun);
+    });
+    res.on('end',function(){
+        console.log('No more data in response.********');
+    });
+});
+req.on('error',function(err){
+    console.error(err);
+});
+req.write(postData);
+req.end();
