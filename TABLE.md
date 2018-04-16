@@ -26,6 +26,17 @@ CREATE TABLE user(
 user_id|varchar(32)|not null|用户ID|外键(user)
 apply_time|date|not null|申请时间|
 check_key|varchar(32)|not null|验证码|
+
+## SQL代码
+```
+CREATE TABLE resetpwd(
+  user_id  varchar(32) not null,
+  apply_time date not null,
+  check_key varchar(32) null,
+  CONSTRAINT PRIMARY KEY (user_id),
+  CONSTRAINT FOREIGN KEY (user_id) REFERENCES user(user_id)
+);
+```
 ---
 ## 管理员表 manager
 字段|类型|是否为空|含义|约束条件

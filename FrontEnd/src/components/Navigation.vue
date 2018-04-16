@@ -30,6 +30,7 @@
           {{user.user_info.user_id}}
         </router-link>
       </div>
+      <button @click="clearCookie('user')">注销</button>
     </div>
     <div class="user-login" v-if="!cookie">
       <router-link :to="{ name: 'Login'}">
@@ -75,6 +76,9 @@ export default {
           }
         }
       }
+    },
+    clearCookie: function (name) {
+      document.cookie = name + '= ; expires=-1;'
     },
     getUserInfo: function () {
       const self = this

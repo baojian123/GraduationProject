@@ -15,6 +15,7 @@
           <div class="submit button" @click="login">
             提交
           </div>
+          <button @click="resetpwd">忘记密码</button>
         </div>
       </div>
     </div>
@@ -41,6 +42,11 @@ export default{
         .then(function (response) {
           self.message = response.data
           alert(self.message)
+        })
+    },
+    resetpwd: function () {
+      axios.post('http://localhost:3000/resetpassword',{user_id: this.user.user_id})
+        .then(function (response) {
         })
     }
   }

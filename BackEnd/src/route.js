@@ -210,7 +210,7 @@ app.use('/resetpassword', function (req, res) {
 			res.send()
 		}
 		else{
-			var user_email = results[0]
+			var user_email = results[0].user_email
 
 			sqlString = 'insert into resetpwd values(?,?,?);'
 			mysql.query(sqlString, [user_id, apply_time, check_key], function (results) {
@@ -222,31 +222,33 @@ app.use('/resetpassword', function (req, res) {
 						pass: 'axvfsohdnkswbgdf' //授权码,通过QQ获取
 					}
 				})
-				var host = sever.address().address;
+				var host = sever.address().host;
 				var port = sever.address().port;
 
 				var querystring = {
 					user_id: user_id,
-					apply_date: apply_date,
+					apply_time: apply_time.toLocaleString(),
 					check_key: check_key
 				}
 
-				var url = host + port + '/checkingkey/' + qs.stringify(querystring)
-				console.log(url)
+				var url = 'http://localhost:3000/checkingkey?' + qs.stringify(querystring)
+				console.log(results)
 				var mailOptions = {
 					from: '351211168@qq.com',
 					to: user_email,
 					subject: '交游旅游网站——账户密码重置',
 					html: '你好！亲爱的' + user_id + '点击一下链接即可重置你的账户密码<a href="' + url + '"> ' + url + ''
 				}
-
-				transporter.sendMail(mailOptions, function (err, info) {
-					if (err) {
-						console.log(err)
-						return
-					}
-					console.log(info)
-				})
+				console.log(mailOptions)
+				if (results != undefined) {
+					transporter.sendMail(mailOptions, function (err, info) {
+						if (err) {
+							console.log(err)
+							return
+						}
+						console.log(info)
+					})
+				}
 			})
 		}
 	})
@@ -261,36 +263,44 @@ app.use('/checkingkey', function (req, res) {
 	res.header( "Access-Control-Max-Age", "1000" ); //
 	res.header("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
 
-	var length = Math.floor(Math.random() * 16 + 16)
-	var user_id = req.querystring.user_id
-	var apply_time = req.querystring.apply_time
-	var check_key = req.querystring.check_key
+	var length = Math.floor(Math.random() * 8 + 8)
+	var user_id = req.query.user_id
+	var apply_time = new Date(req.query.apply_time)
+	var check_key = req.query.check_key
 	var user_pwd = getRandom(length)
 	var now_time = new Date ()
 	var expires_time = 0.5 * constant.hour
 	var sqlString = 'select * from resetpwd where user_id = ?;'
+	console.log(user_pwd)
 	mysql.query(sqlString, [user_id], function (results) {
 		if (results.length != 0) {
-			if (check_key == results) {
+			if (check_key === results[0].check_key) {
 				if (now_time - apply_time <=expires_time) {
 					sqlString = 'update user set user_pwd = ? where user_id = ? ;'
 					mysql.query(sqlString,[user_pwd, user_id], function (results) {
 						var json = {
 							user_pwd: user_pwd
 						}
-						res.write(JSON.stringify(json))
-						res.send()
+						sqlString = 'delete from resetpwd where user_id = ? ;'
+						mysql.query(sqlString, [user_id], function (results) {
+							res.write(JSON.stringify(json))
+							console.log(json)
+							res.send()
+						})
 					})
 				}else {
 					res.write("该链接已过期")
+					console.log("该链接已过期")
 					res.send()
 				}
 			}else {
 				res.write("链接错误")
+				console.log("链接错误")
 				res.send()
 			}
 		}else {
 			res.write("该用户尚未申请重置密码")
+			console.log("该用户尚未申请重置密码")
 			res.send()
 		}
 	})
@@ -793,7 +803,7 @@ app.use('/register',function(req,res){
 			console.log("注册成功");
 			res.write("注册成功");
 			sqlString='insert into user(user_id,user_pwd,user_email) values(?,?,?);'
-			mysql.query(sqlString,[user_id,user_pwd],function(results){
+			mysql.query(sqlString,[user_id,user_pwd,user_email],function(results){
 				console.log('插入成功:'+results);
 			});
 		}
@@ -802,7 +812,7 @@ app.use('/register',function(req,res){
 });
 
 //部署
-var sever =app.listen(3000, function(){
+var sever =app.listen(3000, 'localhost', function(){
 	var host = sever.address().address;
 	var port = sever.address().port;
 
