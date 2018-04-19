@@ -116,11 +116,12 @@ app.use('/userallinfo', function(req,res){
 	// console.log(user_name);
 	mysql.query(sqlString,[user_id],function(results){
 		console.log("user_info:"+results[0])
-		json.user_info = results[0];
 		var user_id;
 		if (results[0] === undefined){
 			user_id = ''
+			json.user_info.user_id = ''
 		}else{
+			json.user_info = results[0];
 			user_id = results[0].user_id
 		}
 		sqlString = "select user_id,user_icon from user where user_id in (select following_id from follow where follower_id = ?);";//关注的人
@@ -136,6 +137,7 @@ app.use('/userallinfo', function(req,res){
 					json.follower_list[i]=results[i];
 				}
 				// sqlString = "select * from passage from"
+				console.log(json)
 				res.write(JSON.stringify(json));
 				res.send();
 			});
@@ -283,9 +285,25 @@ app.use('/checkingkey', function (req, res) {
 						}
 						sqlString = 'delete from resetpwd where user_id = ? ;'
 						mysql.query(sqlString, [user_id], function (results) {
-							res.write(JSON.stringify(json))
-							console.log(json)
-							res.send()
+							sqlString = 'select user_email from user where user_id = ? ;'
+							mysql.query(sqlString, [user_id], function (results) {
+								var user_email = results[0].user_email
+								var mailOptions = {
+									from: '351211168@qq.com',
+									to: user_email,
+									subject: '交游旅游网站——账户密码重置',
+									html: '你好！亲爱的' + user_id + '你的账户密码已重置为<strong > ' + user_pwd + '</strong>'
+								}
+								console.log(mailOptions)
+								transporter.sendMail(mailOptions, function (err, info) {
+									if (err) {
+										console.log(err)
+										return
+									}
+									console.log(info)
+								})
+								res.send()
+							})
 						})
 					})
 				}else {

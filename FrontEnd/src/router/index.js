@@ -7,6 +7,8 @@ import UserInfo from '@/pages/UserInfo.vue'
 import Manage from '@/pages/Manage.vue'
 import ManageLogin from '@/pages/ManageLogin.vue'
 import AuditingPage from '@/pages/AuditingPage.vue'
+import HotelSearch from '@/pages/HotelSearch.vue'
+import TrainSearch from '@/pages/TrainSearch.vue'
 Vue.use(Router)
 
 export default new Router({
@@ -16,6 +18,16 @@ export default new Router({
       path: '/',
       name: 'Homepage',
       component: Homepage
+    },
+    {
+      path: '/HotelSearch',
+      name: 'HotelSearch',
+      component: HotelSearch
+    },
+    {
+      path: '/TrainSearch',
+      name: 'TrainSearch',
+      component: TrainSearch
     },
     {
       path: '/Login',

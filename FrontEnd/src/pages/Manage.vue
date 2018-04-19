@@ -38,7 +38,7 @@
       </div>
       {{database.column_name[table_selected]}}
       {{database.data[table_selected]}}
-      <table style="border:1px soild;">
+      <table id="table-1" style="border:1px soild;">
         <th v-for="(value) in database.column_name[table_selected]" :key="value">{{value}}</th>
         <tr v-for="(row) in database.data[table_selected]" :key="row">
           <td v-for="(value) in row" :key="value">{{value}}</td>
@@ -53,6 +53,7 @@
 <script>
 import axios from 'axios'
 import split from '@/split.js'
+import '@/css/table-style.css'
 export default {
   data () {
     return {

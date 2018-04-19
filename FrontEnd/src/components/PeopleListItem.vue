@@ -11,10 +11,9 @@
         {{item.user_id}}
       </a>
       <!-- <router-link :to="{ path: '/userinfo/' + item.user_id}"> -->
-
     </div>
     <!-- <button type="button" v-if="item.is_followed != undefined" @click="follow(item.user_id,flag)">{{flag? '取消关注':'关注'}}</button> -->
-    <div class="follow-button">
+    <div v-if="cookie != ''" class="follow-button">
       <FollowButton :follower_id="cookie" :item="item"></FollowButton>
     </div>
   </div>
@@ -33,7 +32,7 @@ export default {
   },
   methods: {
     follow: function (id, flag) {
-      alert(this.cookie + ' ' + id)
+      // alert(this.cookie + ' ' + id)
       var json = {
         follower_id: this.cookie,
         following_id: id

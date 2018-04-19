@@ -1,6 +1,10 @@
 <template lang="html">
   <div class="passage-item">
-    {{passage.passage_title}}
+    <div class="passage-title">
+      <h1>
+        {{passage.passage_title}}
+      </h1>
+    </div>
     <div class="passage-content" v-html="passage.passage_content">
     </div>
     <button  @click="previewPassage(passage)">预览</button>
@@ -12,11 +16,11 @@
         <div class="author-id">
           <router-link :to="{ path: '/userinfo/' + passage.user_id }">{{passage.user_id}}</router-link>
         </div>
-        <div class="follow-button">
+        <div v-if="user.user_info.user_id === undefined" class="follow-button">
           <!-- <button @click="follow">
             关注
           </button> -->
-          <FollowButton :follower_id="user.user_info.user_id" :item="author"></FollowButton>
+          <FollowButton  :follower_id="user.user_info.user_id" :item="author"></FollowButton>
         </div>
       </div>
       <div class="comment">
@@ -99,7 +103,11 @@ export default {
 </script>
 
 <style scoped>
-
+.passage-title {
+  display:flex;
+  flex-direction: row;
+  justify-content: center;
+}
 .author {
   display:flex;
   flex-direction: row;
@@ -112,6 +120,7 @@ export default {
 }
 .passage-item {
   border: 1px solid #000000;
+  padding:10px;
   margin:10px;
 }
 </style>

@@ -9,14 +9,14 @@
       </h3>
     </div>
     <div class="nav-list">
-      <div class="homepage nav-list-item">
+      <div class="homepage nav-list-item" :class="{active:homepageActive}">
         <router-link :to="{ path: '/' }">首页</router-link>
       </div>
-      <div class="hotel nav-list-item">
-        <router-link :to="{ path: '/hotel' }">酒店</router-link>
+      <div class="hotel nav-list-item" :class="{active:hotelActive}">
+        <router-link :to="{ path: '/hotelsearch' }">酒店</router-link>
       </div>
-      <div class="train nav-list-item">
-        <router-link :to="{ path: '/train' }">火车</router-link>
+      <div class="train nav-list-item" :class="{active:trainActive}">
+        <router-link :to="{ path: '/trainsearch' }">火车</router-link>
       </div>
     </div>
     <div class="user-info" v-if="cookie">
@@ -30,7 +30,11 @@
           {{user.user_info.user_id}}
         </router-link>
       </div>
-      <button @click="clearCookie('user')">注销</button>
+      <div class="logout">
+        <div class="button" @click="clearCookie('user')">
+          注销
+        </div>
+      </div>
     </div>
     <div class="user-login" v-if="!cookie">
       <router-link :to="{ name: 'Login'}">
@@ -54,13 +58,16 @@ export default {
   name: 'Navigation',
   data () {
     return {
+      homepageActive:false,
+      hotelActive:false,
+      trainActive:false,
       cookie: false,
       user: {
         user_id: ''
       }
     }
   },
-  props: ['color'],
+  props: ['color','active'],
   methods: {
     getCookie: function (name) {
       var arr = document.cookie.split(';')
@@ -79,6 +86,7 @@ export default {
     },
     clearCookie: function (name) {
       document.cookie = name + '= ; expires=-1;'
+      location.href = '/'
     },
     getUserInfo: function () {
       const self = this
@@ -90,15 +98,36 @@ export default {
             self.user.user_info.user_icon = require('../assets/icon/' + self.user.user_info.user_icon)
           })
       }
+    },
+    isActive: function () {
+      if (this.active === '首页') {
+        this.homepageActive = true;
+      }
+      if (this.active === '酒店') {
+        this.hotelActive = true;
+      }
+      if (this.active === '火车') {
+        this.trainActive = true;
+      }
     }
   },
   mounted () {
+    this.isActive()
+  },
+  created () {
     this.getUserInfo()
   }
 }
 </script>
 
 <style scoped>
+.active>a{
+  color:#ffffff;
+}
+.active.nav-list-item {
+  background-color: #999999;
+  box-shadow: none;
+}
 .header{
   position: fixed;
   top: 0%;
@@ -110,6 +139,7 @@ export default {
   justify-content:space-between;
   padding-left: 20px;
   padding-right: 20px;
+  z-index:4;
 }
 .user-info{
   display: flex;
@@ -126,10 +156,26 @@ export default {
   width:800px;
 }
 .nav-list-item {
+  /* border-top-left-radius: 30px; */
+  /* border-top-left-radius: 10px; */
+  background-color: #777777;
   padding: 20px;
+  /* box-shadow: 7px -4px 7px 0px rgb(0,0,0) inset; */
   /* height:100%;
   display:flex;
   flex-direction: column;
   justify-content:center; */
+}
+.user-login {
+  padding-top: 10px;
+  display: flex;
+  flex-direction: row;
+}
+.register {
+  margin-left: 15px;
+}
+.logout {
+  padding-top:10px;
+  margin-left: 15px;
 }
 </style>

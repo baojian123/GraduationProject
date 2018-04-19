@@ -1,6 +1,6 @@
 <template>
   <div  class = "Homepage" style="z-index:1;">
-    <Navigation :color = "colorMsg"></Navigation>
+    <Navigation :active="target":color = "colorMsg"></Navigation>
     <Dialog @closeDialog="closeDialog" v-if="show_dialog" :type = "type" :passage="content"></Dialog>
     <div class="main">
       <!-- <button @click="flag=!flag" type="button" name="button">{{flag}}</button> -->
@@ -11,6 +11,7 @@
           <PassageListItem  @previewPassage="previewPassage" :passage="passageItem" :user="user"></PassageListItem>
         </div>
       </div>
+        <DatePicker></DatePicker>
         <input type="text" v-model="passage_title">
         <PassageEditor @submitContent="submitContent"></PassageEditor>
     </div>
@@ -31,6 +32,7 @@ export default {
   name: 'Homepage',
   data () {
     return {
+      target: '首页',
       colorMsg: '#555555',
       msg: 'hello',
       type: 'login',
@@ -109,12 +111,18 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+
+.Homepage{
+  padding-top: 60px;
+  padding-bottom: 50px;
+}
 .main{
-  position:relative;
-  top:200px;
-  left:200px;
-  width:800px;
-  height:300px;
+  width:900px;
+  margin: 0 auto;
+  padding:10px;
+  box-shadow: 7px 7px 5px 3px rgba(0,0,0,.3);
+  background-color:#ffffff;
+  /* border-radius:20px; */
 }
 h1, h2 {
   font-weight: normal;
